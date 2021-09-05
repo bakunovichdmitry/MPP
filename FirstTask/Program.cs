@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Threading;
 
 namespace FirstTask
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            Console.WriteLine("Hello World!");
+            _ = new TaskQueue(15);
         }
     }
 }
