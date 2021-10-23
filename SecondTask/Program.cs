@@ -9,7 +9,7 @@ namespace SecondTask
         delegate void Operation(string sourceFieName, string destFileName);
         static void Main(string[] args) 
         {
-            FileСopier fileСopier = new FileСopier();
+            FileCopier fileСopier = new FileCopier();
             fileСopier.StartCopy();
         }
     }

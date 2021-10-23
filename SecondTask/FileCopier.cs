@@ -1,18 +1,19 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using FirstTask;
 
 namespace SecondTask
 {
-    class FileСopier
+    class FileCopier
     {
         private string sourcePath;
         private string targetPath;
 
-        public int copyFileNumber = 0;
+        public static int copyFileNumber = 0;
 
         TaskQueue taskQueue = new TaskQueue(3);
-        public FileСopier(
+        public FileCopier(
             string sourcePath = @"C:\Users\37533\Desktop\TestCopy",
             string targetPath = @"C:\Users\37533\Desktop\TestCopyDest"
 )
@@ -26,7 +27,7 @@ namespace SecondTask
 
         public void CheckSourceDirectory()
         {
-            if (!System.IO.Directory.Exists(this.sourcePath))
+            if (!System.IO.Directory.Exists(sourcePath))
             {
                 Console.WriteLine("Source path don't exists");
                 System.Environment.Exit(0);
@@ -35,38 +36,48 @@ namespace SecondTask
         }
         public void CheckTargetDirectory()
         {
-            if (!System.IO.Directory.Exists(this.targetPath))
+            if (!System.IO.Directory.Exists(targetPath))
             {
-                System.IO.Directory.CreateDirectory(this.targetPath);
+                System.IO.Directory.CreateDirectory(targetPath);
             }
         }
 
         public void StartCopy()
         {
-            string[] files = System.IO.Directory.GetFiles(this.sourcePath);
-            foreach (string s in files)
+            CopyDirectories();
+            CopyFiles();
+            taskQueue.Finish();
+            Console.WriteLine(copyFileNumber);
+        }
+
+        public void CopyDirectories()
+        {
+            foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
             {
-                Console.WriteLine(s);
-                string fileName = System.IO.Path.GetFileName(s);
-                string destFile = System.IO.Path.Combine(targetPath, fileName);
-                taskQueue.EnqueueTask(
-                    delegate
-                    {
-                        try
-                        {
-                            Console.WriteLine(fileName);
-                            Console.WriteLine(destFile);
-                            System.IO.File.Copy(s, destFile);
-                            Console.WriteLine("current proc id = " + Thread.CurrentThread.ManagedThreadId);
-                            copyFileNumber++;
-                        }
-                        catch (SystemException e)
-                        {
-                            Console.WriteLine(e.Message);
-                        }
-                    }
-                );
+                Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
             }
+
+        }
+
+        public void CopyFiles()
+        {
+            foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+             {
+                taskQueue.EnqueueTask(
+                     delegate
+                     {
+                         try
+                         {
+                             File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
+                             copyFileNumber++;
+                         }
+                         catch (SystemException e)
+                         {
+                             Console.WriteLine(e.Message);
+                         }
+                     }
+                 );
+             }
         }
     }
 }
