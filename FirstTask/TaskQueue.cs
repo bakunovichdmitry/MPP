@@ -8,21 +8,49 @@ namespace FirstTask
     class TaskQueue
     {
         private Thread[] threadPool;
-        public int QuantityThread { get; set; }
+        public delegate void taskDelegate();
+        private Queue<taskDelegate> TaskDelegateQueue = new Queue<taskDelegate>();
+
+        public bool keepRunning = true;
+
         public TaskQueue(int quantityThread)
         {
             this.threadPool = new Thread[quantityThread];
-            QuantityThread = quantityThread;
             for (int i = 0; i < quantityThread; i++)
             {
                 threadPool[i] = new Thread(ThreadWork);
                 threadPool[i].Start();
             }
         }
+        public void EnqueueTask(taskDelegate task)
+        {
+            lock(TaskDelegateQueue) { 
+                TaskDelegateQueue.Enqueue(task);
+            }
+        }
 
         public void ThreadWork()
         {
-            Console.WriteLine("current proc id = " + Thread.CurrentThread.ManagedThreadId);
+            taskDelegate task;
+            while (keepRunning)
+            {
+                try
+                {
+                    while (TaskDelegateQueue.Count > 0)
+                    {
+                        task = null;
+                        lock (TaskDelegateQueue)
+                        {
+                            task = TaskDelegateQueue.Dequeue();
+                        }
+                        if (task != null)
+                        {
+                            task.Invoke();
+                        }
+                    }
+                }
+                catch { }
+            }
         }
     }
 }
