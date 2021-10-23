@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace FirstTask
 {
-    class TaskQueue
+    public class TaskQueue
     {
         private Thread[] threadPool;
         public delegate void taskDelegate();
@@ -51,6 +51,11 @@ namespace FirstTask
                 }
                 catch { }
             }
+        }
+
+        public void Finish()
+        {
+            keepRunning = false;
         }
     }
 }

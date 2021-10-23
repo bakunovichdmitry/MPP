@@ -15,8 +15,7 @@ namespace FirstTask
             }
 
             Thread.Sleep(1000);
-            /*if (taskQueue.)*/
-            taskQueue.keepRunning = false;
+            taskQueue.Finish();
         }
 
         private static void DoSmth() {

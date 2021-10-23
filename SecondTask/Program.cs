@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Threading;
+
 
 namespace SecondTask
 {
     class Program
     {
-        static void Main(string[] args)
+        delegate void Operation(string sourceFieName, string destFileName);
+        static void Main(string[] args) 
         {
-            Console.WriteLine("Hello World!");
+            FileСopier fileСopier = new FileСopier();
+            fileСopier.StartCopy();
         }
     }
 }
