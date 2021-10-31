@@ -5,12 +5,14 @@ using System.Threading;
 
 namespace FirstTask
 {
-    class TaskQueue
+    public class TaskQueue
     {
         private Thread[] threadPool;
         public delegate void taskDelegate();
         private Queue<taskDelegate> TaskDelegateQueue = new Queue<taskDelegate>();
 
+
+        public int completeTaskNumber = 0;
         public bool keepRunning = true;
 
         public TaskQueue(int quantityThread)
@@ -51,6 +53,11 @@ namespace FirstTask
                 }
                 catch { }
             }
+        }
+
+        public void Finish()
+        {
+            keepRunning = false;
         }
     }
 }
