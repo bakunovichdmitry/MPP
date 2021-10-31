@@ -10,7 +10,7 @@ namespace SecondTask
         static void Main(string[] args) 
         {
             FileCopier fileСopier = new FileCopier();
-            fileСopier.StartCopy();
+            fileСopier.Start();
         }
     }
 }

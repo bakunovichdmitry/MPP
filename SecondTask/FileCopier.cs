@@ -10,8 +10,6 @@ namespace SecondTask
         private string sourcePath;
         private string targetPath;
 
-        public static int copyFileNumber = 0;
-
         TaskQueue taskQueue = new TaskQueue(3);
         public FileCopier(
             string sourcePath = @"C:\Users\37533\Desktop\TestCopy",
@@ -27,34 +25,41 @@ namespace SecondTask
 
         public void CheckSourceDirectory()
         {
-            if (!System.IO.Directory.Exists(sourcePath))
+            if (!Directory.Exists(sourcePath))
             {
                 Console.WriteLine("Source path don't exists");
-                System.Environment.Exit(0);
+                Environment.Exit(0);
             }
 
         }
         public void CheckTargetDirectory()
         {
-            if (!System.IO.Directory.Exists(targetPath))
+            if (!Directory.Exists(targetPath))
             {
-                System.IO.Directory.CreateDirectory(targetPath);
+                Directory.CreateDirectory(targetPath);
             }
         }
 
-        public void StartCopy()
+        public void Start()
         {
             CopyDirectories();
             CopyFiles();
+            
             taskQueue.Finish();
-            Console.WriteLine(copyFileNumber);
         }
 
         public void CopyDirectories()
         {
             foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
             {
-                Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
+                try
+                {
+                    Directory.CreateDirectory(dirPath.Replace(sourcePath, targetPath));
+                }
+                catch (SystemException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
             }
 
         }
@@ -62,22 +67,21 @@ namespace SecondTask
         public void CopyFiles()
         {
             foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
-             {
+            {
                 taskQueue.EnqueueTask(
-                     delegate
-                     {
-                         try
-                         {
-                             File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
-                             copyFileNumber++;
-                         }
-                         catch (SystemException e)
-                         {
-                             Console.WriteLine(e.Message);
-                         }
-                     }
-                 );
-             }
+                    delegate
+                    {
+                        try
+                        {
+                            File.Copy(newPath, newPath.Replace(sourcePath, targetPath), true);
+                        }
+                        catch (SystemException e)
+                        {
+                            Console.WriteLine(e.Message);
+                        }
+                    }
+                );
+            }
         }
     }
 }
