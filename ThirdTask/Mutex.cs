@@ -1,20 +1,22 @@
 ﻿using System.Threading;
+using System;
 
 namespace ThirdTask
 {
     class Mutex
     {
-        private int currentId;
+        private int currentValue;
 
         public void Lock()
         {
-            while (Interlocked.CompareExchange(ref currentId, 1, 0) != 0)
+            while (Interlocked.CompareExchange(ref currentValue, 1, 0) != 0) {
                 Thread.Sleep(1000);
+            }
         }
 
         public void Unlock()
         {
-            while (Interlocked.CompareExchange(ref currentId, 0, 1) != 1) ;
+            Interlocked.CompareExchange(ref currentValue, 0, 1);
         }
     }
 }

@@ -11,8 +11,6 @@ namespace FirstTask
         public delegate void taskDelegate();
         private Queue<taskDelegate> TaskDelegateQueue = new Queue<taskDelegate>();
 
-
-        public int completeTaskNumber = 0;
         public bool keepRunning = true;
 
         public TaskQueue(int quantityThread)
