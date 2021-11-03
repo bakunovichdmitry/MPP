@@ -10,6 +10,8 @@ namespace SecondTask
         private string sourcePath;
         private string targetPath;
 
+        private int completeTaskNumber = 0;
+
         TaskQueue taskQueue = new TaskQueue(3);
         public FileCopier(
             string sourcePath = @"C:\Users\37533\Desktop\TestCopy",
@@ -81,7 +83,9 @@ namespace SecondTask
                         }
                     }
                 );
+                completeTaskNumber++;
             }
+            Console.WriteLine(completeTaskNumber);
         }
     }
 }
