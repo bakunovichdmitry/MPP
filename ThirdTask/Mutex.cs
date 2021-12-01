@@ -5,18 +5,18 @@ namespace ThirdTask
 {
     class Mutex
     {
-        private int currentValue;
+        private int lockId;
 
         public void Lock()
         {
-            while (Interlocked.CompareExchange(ref currentValue, 1, 0) != 0) {
-                Thread.Sleep(1000);
+            while (Interlocked.CompareExchange(ref lockId, Thread.CurrentThread.ManagedThreadId, 0) != 0) {
+                Thread.Sleep(100);
             }
         }
 
         public void Unlock()
         {
-            Interlocked.CompareExchange(ref currentValue, 0, 1);
+            Interlocked.CompareExchange(ref lockId, 0, Thread.CurrentThread.ManagedThreadId);
         }
     }
 }
